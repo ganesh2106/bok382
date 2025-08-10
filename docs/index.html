@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Respiratory_Disorders_Newborn_QA.docx — Quiz</title>
+<!--
+Single-file Quiz Builder
+Source: Respiratory_Disorders_Newborn_QA.docx
+How to add/modify questions:
+- Edit the `questions` array below. Each question object:
+  {
+    id: "q1",
+    stem: "Your question text?",
+    options: [
+      { label: "A", text: "Option text", isCorrect: false },
+      { label: "B", text: "Option text", isCorrect: true },
+      { label: "C", text: "Option text", isCorrect: false },
+      { label: "D", text: "Option text", isCorrect: false }
+    ],
+    explanation: "Short rationale excerpted from the doc."
+  }
+- Exactly one option must have isCorrect: true.
+- To change the timer, set QUIZ_DURATION_MS below.
+-->
+<style>
+  :root{
+    --bg:#0b0f14; --fg:#e8eef6; --muted:#9fb0c3; --accent:#5eead4; --bad:#f87171; --good:#34d399; --card:#121822; --border:#223248;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial;color:var(--fg);background:linear-gradient(180deg,#0b0f14,#0a1220 40%, #0b0f14)}
+  header{position:sticky;top:0;z-index:20;background:rgba(18,24,34,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+  .wrap{max-width:1100px;margin:0 auto;padding:16px}
+  .title{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .pill{padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+  .timer{font-weight:700;letter-spacing:.5px}
+  main{max-width:1100px;margin:16px auto;padding:0 16px 80px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .qnav{display:flex;flex-wrap:wrap;gap:8px;padding:12px}
+  .qnav button{min-width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:#0e1622;color:var(--fg);cursor:pointer}
+  .qnav button.current{outline:2px solid var(--accent)}
+  .qnav button.answered{background:#142133}
+  .qnav button.correct{background:rgba(52,211,153,.15);border-color:#14532d}
+  .qnav button.wrong{background:rgba(248,113,113,.15);border-color:#7f1d1d}
+  .qwrap{padding:20px}
+  .stem{font-size:1.05rem;margin-bottom:14px}
+  .opts{display:grid;gap:10px}
+  .opt{border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:flex-start;background:#0f1724}
+  .opt input{accent-color:var(--accent);width:20px;height:20px;margin-top:2px}
+  .opt label{display:flex;gap:10px;cursor:pointer;align-items:flex-start;width:100%}
+  .kbd{font-weight:700;min-width:22px;text-align:center;color:#08131a;background:var(--accent);border-radius:6px;padding:2px 6px}
+  .controls{display:flex;gap:10px;justify-content:space-between;padding:12px;border-top:1px solid var(--border);background:rgba(8,12,20,.6);position:sticky;bottom:0;backdrop-filter:blur(8px)}
+  .btn{border:1px solid var(--border);background:#0e1622;color:var(--fg);padding:10px 14px;border-radius:12px;cursor:pointer}
+  .btn.primary{background:linear-gradient(180deg,#133848,#0f2333);border-color:#1e3a5f}
+  .btn.danger{background:linear-gradient(180deg,#451a1a,#220c0c);border-color:#742a2a}
+  .btn.good{background:linear-gradient(180deg,#083a2b,#0a201a);border-color:#14532d}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  .stat{padding:10px;border:1px solid var(--border);border-radius:12px;text-align:center}
+  .stat h3{margin:0;font-size:1.1rem}
+  .explain{margin-top:10px;color:var(--muted);border-left:3px solid #284b63;padding-left:10px}
+  .tag{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;border:1px solid var(--border);color:var(--muted);font-size:.8rem}
+  footer{position:fixed;right:16px;bottom:16px;display:flex;gap:8px}
+  @media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap title">
+      <h1 style="margin:0;font-size:1.1rem">Respiratory_Disorders_Newborn_QA.docx — Quiz</h1>
+      <span class="pill" id="qCount">0 questions</span>
+      <span class="pill timer" id="timer">30:00</span>
+      <span class="pill" id="saveStatus">Autosaved</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" style="margin-bottom:12px">
+      <div class="qnav" id="qnav" aria-label="Question map"></div>
+    </section>
+
+    <section class="card">
+      <div class="qwrap" id="qwrap">
+        <!-- Question content injected here -->
+      </div>
+      <div class="controls">
+        <div>
+          <button class="btn" id="prevBtn" aria-label="Previous question">⟵ Prev</button>
+          <button class="btn" id="nextBtn" aria-label="Next question">Next ⟶</button>
+        </div>
+        <div>
+          <button class="btn" id="downloadJsonBtn" title="Download questions as JSON">Download JSON</button>
+          <button class="btn" id="exportBtn" title="Export results to CSV">Export CSV</button>
+          <button class="btn primary" id="submitBtn">Submit</button>
+          <button class="btn good" id="retakeBtn" disabled>Retake</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="results" style="margin-top:16px;display:none">
+      <div class="card qwrap">
+        <div class="stats" id="stats"></div>
+        <div id="review"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer aria-hidden="true">
+    <button class="btn" id="scrollTop">↑ Top</button>
+  </footer>
+
+<script>
+  // ==== CONFIG ====
+  const QUIZ_TITLE = 'Respiratory_Disorders_Newborn_QA.docx — Quiz';
+  const STORAGE_KEY = 'quiz:'+QUIZ_TITLE;
+  const QUIZ_DURATION_MS = 30 * 60 * 1000; // 30:00
+
+  // ==== DATA ====
+  // Built strictly from the provided .docx. Explanations are the corresponding Answer lines.
+  // Distractors are paraphrases or other items from the same document.
+  const questions = [
+    {id:'q1', stem:'What antenatal, perinatal, and postnatal history points would you ask about in a newborn with suspected respiratory distress?', options:[
+      {label:'A', text:'Only family history and feeding patterns', isCorrect:false},
+      {label:'B', text:'Antenatal (e.g., DM, HTN, infections, fluid issues), Perinatal (MSL, PROM, fetal distress, assisted delivery), Postnatal (drooling, glucose/temp issues, oxygen need, choking/feeding difficulty)', isCorrect:true},
+      {label:'C', text:'Perinatal factors only (Apgar and birthweight)', isCorrect:false},
+      {label:'D', text:'Maternal diet and newborn sleep schedule only', isCorrect:false}
+    ], explanation:'Antenatal: pre/postterm, maternal drugs/illness (DM, HTN, UTI, chorio, fever, vaginitis), oligo/polyhydramnios, family history. Perinatal: MSL, PROM, fetal distress, difficult/assisted delivery. Postnatal: drooling, hypoglycaemia, temp instability, oxygen need after delivery, coughing/choking, feeding difficulty.'},
+
+    {id:'q2', stem:'List five key clinical signs on examination of a newborn with respiratory distress.', options:[
+      {label:'A', text:'Tachypnoea, grunting/stridor, recessions, nasal flaring, cyanosis', isCorrect:true},
+      {label:'B', text:'Bradycardia, jaundice, petechiae, clubbing, edema', isCorrect:false},
+      {label:'C', text:'Polyuria, hepatomegaly, rash, hematuria, alopecia', isCorrect:false},
+      {label:'D', text:'Nystagmus, tremor, ataxia, mydriasis, rash', isCorrect:false}
+    ], explanation:'Tachypnoea, grunting/stridor, subcostal/intercostal/sternal recessions, nasal flaring, cyanosis; plus dysmorphic features, gallop, bounding pulses, poor perfusion, murmur, hyperoxia test result.'},
+
+    {id:'q3', stem:'What’s the most common cause of respiratory distress in term infants, and what’s the underlying pathophysiology?', options:[
+      {label:'A', text:'RDS due to surfactant deficiency', isCorrect:false},
+      {label:'B', text:'TTN due to delayed absorption of fetal lung fluid from inactive sodium channels', isCorrect:true},
+      {label:'C', text:'MAS due to chemical pneumonitis', isCorrect:false},
+      {label:'D', text:'CDH due to lung hypoplasia', isCorrect:false}
+    ], explanation:'TTN; delayed absorption of fetal lung fluid due to sodium channels not activated.'},
+
+    {id:'q4', stem:'On a CXR, what classic features would you expect in transient tachypnoea of the newborn (TTN)?', options:[
+      {label:'A', text:'Low lung volumes with ground-glass and air bronchograms', isCorrect:false},
+      {label:'B', text:'Coarse patchy infiltrates with hyperinflation', isCorrect:false},
+      {label:'C', text:'Fluid in fissures, perihilar haziness/streaking, mild hyperinflation', isCorrect:true},
+      {label:'D', text:'Bowel gas in thorax with mediastinal shift', isCorrect:false}
+    ], explanation:'Fluid in fissures, perihilar haziness/streaking, mild hyperinflation.'},
+
+    {id:'q5', stem:'What’s the hallmark CXR finding in Respiratory Distress Syndrome (RDS), and what’s the main cause?', options:[
+      {label:'A', text:'Diffuse reticulogranular “ground-glass” with air bronchograms due to surfactant deficiency', isCorrect:true},
+      {label:'B', text:'Unilateral hyperlucency due to air leak', isCorrect:false},
+      {label:'C', text:'Perihilar streaking due to interstitial edema', isCorrect:false},
+      {label:'D', text:'Mediastinal shift due to diaphragmatic hernia', isCorrect:false}
+    ], explanation:'Low lung volumes, diffuse reticulogranular ground glass, air bronchograms; caused by surfactant deficiency.'},
+
+    {id:'q6', stem:'In Meconium Aspiration Syndrome (MAS), why is CPAP contraindicated?', options:[
+      {label:'A', text:'It causes bradycardia', isCorrect:false},
+      {label:'B', text:'It increases risk of aspiration from the stomach', isCorrect:false},
+      {label:'C', text:'Ball-valve effect → air trapping, overdistension, pneumothorax, PPHN', isCorrect:true},
+      {label:'D', text:'It washes out surfactant', isCorrect:false}
+    ], explanation:'CPAP worsens ball-valve effect → overdistension, pneumothorax, PPHN.'},
+
+    {id:'q7', stem:'What’s the classic triad in Pierre Robin Syndrome?', options:[
+      {label:'A', text:'Macroglossia, cleft lip, choanal atresia', isCorrect:false},
+      {label:'B', text:'Micrognathia, glossoptosis, cleft palate', isCorrect:true},
+      {label:'C', text:'Micrognathia, microcephaly, laryngomalacia', isCorrect:false},
+      {label:'D', text:'Glossoptosis, TEF, cleft lip', isCorrect:false}
+    ], explanation:'Micrognathia, glossoptosis, cleft palate.'},
+
+    {id:'q8', stem:'In Congenital Diaphragmatic Hernia (CDH), what key step must you avoid immediately after birth, and why?', options:[
+      {label:'A', text:'Avoid intubation to prevent lung injury', isCorrect:false},
+      {label:'B', text:'Avoid mask ventilation to prevent inflating bowel in thorax', isCorrect:true},
+      {label:'C', text:'Avoid oxygen to reduce free radical injury', isCorrect:false},
+      {label:'D', text:'Avoid NG tube to prevent reflux', isCorrect:false}
+    ], explanation:'Avoid mask ventilation; risk of inflating bowel in thorax → worsens lung compression.'},
+
+    {id:'q9', stem:'In choanal atresia, why is respiratory distress alleviated by crying?', options:[
+      {label:'A', text:'Crying triggers vagal relaxation of choanae', isCorrect:false},
+      {label:'B', text:'Crying reduces pulmonary vascular resistance', isCorrect:false},
+      {label:'C', text:'Crying forces oral breathing, bypassing blocked nasal passages', isCorrect:true},
+      {label:'D', text:'Crying recruits accessory muscles that open the airway', isCorrect:false}
+    ], explanation:'Because crying forces oral breathing, bypassing blocked nasal passages.'},
+
+    {id:'q10', stem:'A newborn presents with respiratory distress. Outline your overall approach from history → exam → investigations → immediate management.', options:[
+      {label:'A', text:'Skip history; intubate then image', isCorrect:false},
+      {label:'B', text:'History (antenatal/perinatal/postnatal) → Exam (signs + dysmorphisms) → Investigations (bloods, imaging) → ABC, oxygen, temperature control, empiric antibiotics if indicated, targeted treatment', isCorrect:true},
+      {label:'C', text:'Exam only; antibiotics for all', isCorrect:false},
+      {label:'D', text:'Imaging first to rule out CDH', isCorrect:false}
+    ], explanation:'History → Exam → Investigations → Immediate management (ABC, oxygen, temp control, empiric antibiotics if indicated, targeted treatment).'},
+
+    {id:'q11', stem:'Broadly compare disorders in newborn respiratory distress by location/type.', options:[
+      {label:'A', text:'Upper airway: choanal atresia, cleft, Pierre Robin, laryngomalacia; Lower airway pulmonary: TTN, RDS, pneumonia, MAS; Lower airway extra-pulmonary: CDH, pneumothorax, TEF', isCorrect:true},
+      {label:'B', text:'Only pulmonary causes are relevant', isCorrect:false},
+      {label:'C', text:'Upper airway is limited to laryngospasm', isCorrect:false},
+      {label:'D', text:'Extra-pulmonary includes MAS and TTN', isCorrect:false}
+    ], explanation:'Upper airway: choanal atresia, cleft lip/palate, Pierre Robin, laryngomalacia. Pulmonary: TTN, RDS, congenital pneumonia, MAS. Extra-pulmonary: CDH, pneumothorax, TEF.'},
+
+    {id:'q12', stem:'What is the underlying pathophysiology in TTN, and why is it more common after elective C-section?', options:[
+      {label:'A', text:'Surfactant deficiency due to prematurity', isCorrect:false},
+      {label:'B', text:'Delayed lung fluid absorption; C-section misses thoracic squeeze and catecholamine surge', isCorrect:true},
+      {label:'C', text:'Airway malacia with dynamic collapse', isCorrect:false},
+      {label:'D', text:'Intrauterine infection causing edema', isCorrect:false}
+    ], explanation:'Delayed lung fluid absorption due to inactive sodium channels; C-section misses thoracic squeeze + catecholamine surge.'},
+
+    {id:'q13', stem:'What is the hallmark CXR appearance in TTN, and why does it happen?', options:[
+      {label:'A', text:'Fluid in fissures and perihilar haziness from interstitial oedema/engorged lymphatics', isCorrect:true},
+      {label:'B', text:'Air bronchograms and low volumes from surfactant loss', isCorrect:false},
+      {label:'C', text:'Coarse patchy infiltrates from aspiration', isCorrect:false},
+      {label:'D', text:'Bowel gas in chest from diaphragmatic defect', isCorrect:false}
+    ], explanation:'Fluid in fissures + perihilar haziness due to interstitial oedema/engorged lymphatics.'},
+
+    {id:'q14', stem:'List two key preventive measures for RDS and two acute treatments once the baby is born.', options:[
+      {label:'A', text:'Prevent: antenatal steroids, avoid unnecessary prematurity; Treat: exogenous surfactant, nCPAP (escalate to invasive as needed)', isCorrect:true},
+      {label:'B', text:'Prevent: CPAP antenatally; Treat: antibiotics and diuretics', isCorrect:false},
+      {label:'C', text:'Prevent: maternal oxygen therapy; Treat: bronchodilators', isCorrect:false},
+      {label:'D', text:'Prevent: term induction; Treat: chest physiotherapy', isCorrect:false}
+    ], explanation:'Prevention: antenatal steroids, avoid unnecessary prematurity. Acute: exogenous surfactant, non-invasive ventilation (nCPAP) → invasive if needed.'},
+
+    {id:'q15', stem:'In MAS, why is CPAP avoided?', options:[
+      {label:'A', text:'Risk of apnea', isCorrect:false},
+      {label:'B', text:'Risk of pulmonary edema from fluid overload', isCorrect:false},
+      {label:'C', text:'Ball-valve effect → air trapping/overdistension', isCorrect:true},
+      {label:'D', text:'It increases reflux', isCorrect:false}
+    ], explanation:'Ball-valve effect risk → air trapping → overdistension/pneumothorax.'},
+
+    {id:'q16', stem:'In CDH, what is the immediate airway management strategy and why?', options:[
+      {label:'A', text:'Mask ventilation because it is less invasive', isCorrect:false},
+      {label:'B', text:'Immediate intubation plus NG decompression to avoid inflating bowel', isCorrect:true},
+      {label:'C', text:'High-flow nasal cannula first', isCorrect:false},
+      {label:'D', text:'Heliox therapy', isCorrect:false}
+    ], explanation:'Immediate intubation + NG decompression; avoid mask ventilation.'},
+
+    {id:'q17', stem:'In RDS, what two factors can reduce surfactant activity besides low quantity?', options:[
+      {label:'A', text:'Altered composition and inactivation by edema/inflammation', isCorrect:true},
+      {label:'B', text:'Excess mucus and airway malacia', isCorrect:false},
+      {label:'C', text:'Reduced diaphragmatic tone and anemia', isCorrect:false},
+      {label:'D', text:'Lung hypoplasia and TEF', isCorrect:false}
+    ], explanation:'Decreased production with prematurity and altered composition reducing activity (conceptual).'},
+
+    {id:'q18', stem:'List three risk factors for congenital pneumonia and the most common organism.', options:[
+      {label:'A', text:'Polycythemia, IDM, twin pregnancy; organism: Listeria', isCorrect:false},
+      {label:'B', text:'PROM, maternal fever/chorio/vaginitis; organism: Group B Streptococcus (GBS)', isCorrect:true},
+      {label:'C', text:'Post-term gestation, MSL; organism: MSSA', isCorrect:false},
+      {label:'D', text:'Elective C-section, maternal anemia; organism: E. coli exclusively', isCorrect:false}
+    ], explanation:'PROM, maternal fever/tachycardia, chorioamnionitis, maternal UTI/vaginitis, spontaneous preterm labour; most common organism: GBS.'},
+
+    {id:'q19', stem:'In MAS, name three possible complications that can occur in the lungs after aspiration.', options:[
+      {label:'A', text:'Pulmonary hypoplasia, pulmonary atresia, PDA', isCorrect:false},
+      {label:'B', text:'Airway obstruction, atelectasis, overdistension/alveolar rupture (± PPHN)', isCorrect:true},
+      {label:'C', text:'Bronchiectasis, emphysema, bronchiolitis obliterans (neonatal)', isCorrect:false},
+      {label:'D', text:'Pulmonary embolism, pulmonary hemorrhage, pneumoconiosis', isCorrect:false}
+    ], explanation:'Airway obstruction, atelectasis, overdistension, alveolar rupture, surfactant dysfunction, chemical pneumonitis, PPHN.'},
+
+    {id:'q20', stem:'In CDH, what’s the most common site and the two named types of hernia?', options:[
+      {label:'A', text:'Right anteromedial; types: Zenker and Morgagni', isCorrect:false},
+      {label:'B', text:'Left posterolateral; types: Bochdalek (posterolateral) and Morgagni (central-anterior)', isCorrect:true},
+      {label:'C', text:'Right posterolateral; types: Bochdalek and Hiatal', isCorrect:false},
+      {label:'D', text:'Central; types: Hiatal and Paraesophageal', isCorrect:false}
+    ], explanation:'Most common site: left posterolateral defect; types: Bochdalek (posterolateral), Morgagni (central-anterior).'},
+
+    {id:'q21', stem:'In choanal atresia, what’s the definitive diagnostic test, and what’s the initial airway management?', options:[
+      {label:'A', text:'MRI; nasal trumpet', isCorrect:false},
+      {label:'B', text:'CT scan; orotracheal intubation and ventilation', isCorrect:true},
+      {label:'C', text:'CXR; CPAP', isCorrect:false},
+      {label:'D', text:'Laryngoscopy; prone positioning only', isCorrect:false}
+    ], explanation:'CT scan; initial airway: orotracheal intubation + ventilation.'},
+
+    {id:'q22', stem:'For pneumothorax in a newborn, what’s the bedside clinical clue and the emergency step before a CXR?', options:[
+      {label:'A', text:'Bilateral crackles; give diuretics', isCorrect:false},
+      {label:'B', text:'Chest asymmetry with unilateral ↓ air entry; needle decompression if unstable', isCorrect:true},
+      {label:'C', text:'Central cyanosis only; start CPAP', isCorrect:false},
+      {label:'D', text:'Apnea; give caffeine', isCorrect:false}
+    ], explanation:'Chest asymmetry, unilateral ↓ breath sounds/movement; emergency: needle decompression if unstable.'},
+
+    {id:'q23', stem:'In laryngomalacia, what’s the typical timing of stridor, and what two issues is it often associated with?', options:[
+      {label:'A', text:'Stridor at rest; associated with pneumonia and MAS', isCorrect:false},
+      {label:'B', text:'Stridor when feeding/sleeping; associated with GER and swallowing difficulties (± snoring)', isCorrect:true},
+      {label:'C', text:'Stridor on exertion; associated with TTN and CDH', isCorrect:false},
+      {label:'D', text:'No stridor; associated with TEF only', isCorrect:false}
+    ], explanation:'Stridor when feeding/sleeping; associated with GER, swallowing difficulties, snoring.'},
+
+    {id:'q24', stem:'For TTN, what’s the typical oxygen saturation target and the usual time course for resolution?', options:[
+      {label:'A', text:'Target 100%; resolves in a week', isCorrect:false},
+      {label:'B', text:'Target 91–95%; resolves in ~24 hours', isCorrect:true},
+      {label:'C', text:'Target 85–88%; resolves in 48–72 hours', isCorrect:false},
+      {label:'D', text:'Room air only; resolves within 6 hours', isCorrect:false}
+    ], explanation:'Oxygen saturation target 91–95%; resolves in ~24h.'},
+
+    {id:'q25', stem:'Tracheoesophageal fistula (TEF) commonly associates with which congenital patterns?', options:[
+      {label:'A', text:'TORCH and Down syndrome', isCorrect:false},
+      {label:'B', text:'VACTERL and CHARGE', isCorrect:true},
+      {label:'C', text:'Turner and Klinefelter', isCorrect:false},
+      {label:'D', text:'Noonan and DiGeorge', isCorrect:false}
+    ], explanation:'VACTERL or CHARGE.'},
+
+    {id:'q26', stem:'Preterm newborn with RDS-like CXR but maternal fever and PROM — most likely diagnosis and key clue?', options:[
+      {label:'A', text:'TTN; elective C-section', isCorrect:false},
+      {label:'B', text:'Congenital pneumonia; infection risk factors such as maternal fever and PROM', isCorrect:true},
+      {label:'C', text:'MAS; meconium-stained liquor', isCorrect:false},
+      {label:'D', text:'CDH; scaphoid abdomen', isCorrect:false}
+    ], explanation:'Congenital pneumonia; key clue: infection risk factors (maternal fever, PROM).'},
+
+    {id:'q27', stem:'Term baby with low lung volumes on CXR after elective C-section — TTN or RDS? Key differentiator?', options:[
+      {label:'A', text:'RDS; prematurity is the clue', isCorrect:false},
+      {label:'B', text:'TTN; look for fluid in fissures rather than classic low-volume ground glass', isCorrect:true},
+      {label:'C', text:'Neither; think CDH', isCorrect:false},
+      {label:'D', text:'MAS; look for hyperinflation', isCorrect:false}
+    ], explanation:'TTN; key differentiator: term + elective C-section + CXR fluid in fissures, not classic low-volume ground glass.'},
+
+    {id:'q28', stem:'Newborn with cyanosis relieved by crying and inability to pass NGT through nose — likely diagnosis?', options:[
+      {label:'A', text:'Pierre Robin sequence', isCorrect:false},
+      {label:'B', text:'Choanal atresia', isCorrect:true},
+      {label:'C', text:'Laryngomalacia', isCorrect:false},
+      {label:'D', text:'TEF', isCorrect:false}
+    ], explanation:'Choanal atresia; key clue: inability to pass NGT through nose and relief with crying.'},
+
+    {id:'q29', stem:'Post-term baby with MAS — is CPAP appropriate?', options:[
+      {label:'A', text:'Yes, to recruit alveoli', isCorrect:false},
+      {label:'B', text:'No; risk of ball-valve effect and pneumothorax', isCorrect:true},
+      {label:'C', text:'Only high-flow oxygen is contraindicated', isCorrect:false},
+      {label:'D', text:'CPAP only during sleep', isCorrect:false}
+    ], explanation:'No; ball-valve effect risk in MAS.'},
+
+    {id:'q30', stem:'Term newborn with scaphoid abdomen and bowel sounds in chest — diagnosis and immediate caution?', options:[
+      {label:'A', text:'TEF; avoid NG tube', isCorrect:false},
+      {label:'B', text:'CDH; avoid mask ventilation', isCorrect:true},
+      {label:'C', text:'Pneumothorax; avoid needle decompression', isCorrect:false},
+      {label:'D', text:'TTN; avoid supplemental oxygen', isCorrect:false}
+    ], explanation:'CDH; avoid mask ventilation.'},
+
+    {id:'q31', stem:'Newborn with positional stridor — laryngomalacia or choanal atresia? Key difference?', options:[
+      {label:'A', text:'Choanal atresia; improves when prone', isCorrect:false},
+      {label:'B', text:'Laryngomalacia; stridor positional and can improve prone', isCorrect:true},
+      {label:'C', text:'Choanal atresia; stridor on feeding/sleeping', isCorrect:false},
+      {label:'D', text:'Neither causes stridor', isCorrect:false}
+    ], explanation:'Laryngomalacia; positional stridor improves prone.'},
+
+    {id:'q32', stem:'Premature baby with RDS — what’s first-line respiratory support?', options:[
+      {label:'A', text:'nCPAP with escalation to surfactant if needed', isCorrect:true},
+      {label:'B', text:'Immediate intubation and HFV for all', isCorrect:false},
+      {label:'C', text:'Heliox via nasal cannula', isCorrect:false},
+      {label:'D', text:'Room air only', isCorrect:false}
+    ], explanation:'nCPAP; escalate to surfactant if needed.'},
+
+    {id:'q33', stem:'Term baby with TTN — why does it resolve quickly?', options:[
+      {label:'A', text:'Because CPAP rapidly restores surfactant', isCorrect:false},
+      {label:'B', text:'Once sodium channels activate, lung fluid clears rapidly', isCorrect:true},
+      {label:'C', text:'Because antibiotics resolve edema', isCorrect:false},
+      {label:'D', text:'Because diaphragm strengthens after birth', isCorrect:false}
+    ], explanation:'Caused by delayed lung fluid clearance; resolves quickly once channels activate.'},
+
+    {id:'q34', stem:'Newborn with suspected TEF — what key investigation is needed before surgery?', options:[
+      {label:'A', text:'Echocardiogram (± renal US/vertebral X-ray) to look for associated anomalies', isCorrect:true},
+      {label:'B', text:'CT pulmonary angiogram', isCorrect:false},
+      {label:'C', text:'MRI brain', isCorrect:false},
+      {label:'D', text:'Sweat chloride test', isCorrect:false}
+    ], explanation:'Echocardiogram (and renal US/vertebral X-ray) for anomalies.'},
+
+    {id:'q35', stem:'MAS case — is empiric antibiotic therapy always required?', options:[
+      {label:'A', text:'Yes, always required', isCorrect:false},
+      {label:'B', text:'No; meconium is sterile, but give if infection risk factors present', isCorrect:true},
+      {label:'C', text:'Only after 72 hours', isCorrect:false},
+      {label:'D', text:'Only if TTN is suspected', isCorrect:false}
+    ], explanation:'No; meconium is sterile, but antibiotics may be used if infection risk factors present.'},
+
+    {id:'q36', stem:'CXR: fluid in fissures + perihilar streaking in a term infant after elective C-section — diagnosis?', options:[
+      {label:'A', text:'RDS', isCorrect:false},
+      {label:'B', text:'MAS', isCorrect:false},
+      {label:'C', text:'TTN', isCorrect:true},
+      {label:'D', text:'CDH', isCorrect:false}
+    ], explanation:'TTN.'},
+
+    {id:'q37', stem:'CXR: low lung volumes + ground glass + air bronchograms in a 30-week preterm — diagnosis?', options:[
+      {label:'A', text:'RDS', isCorrect:true},
+      {label:'B', text:'MAS', isCorrect:false},
+      {label:'C', text:'TTN', isCorrect:false},
+      {label:'D', text:'Pneumothorax', isCorrect:false}
+    ], explanation:'RDS.'},
+
+    {id:'q38', stem:'CXR: coarse patchy infiltrates + hyperinflation in a post-term baby with meconium-stained liquor — diagnosis?', options:[
+      {label:'A', text:'MAS', isCorrect:true},
+      {label:'B', text:'RDS', isCorrect:false},
+      {label:'C', text:'TTN', isCorrect:false},
+      {label:'D', text:'CDH', isCorrect:false}
+    ], explanation:'MAS.'},
+
+    {id:'q39', stem:'CXR: bilateral opacities with air bronchograms in a term infant with PROM and maternal fever — diagnosis?', options:[
+      {label:'A', text:'Congenital pneumonia', isCorrect:true},
+      {label:'B', text:'RDS', isCorrect:false},
+      {label:'C', text:'TTN', isCorrect:false},
+      {label:'D', text:'Pneumothorax', isCorrect:false}
+    ], explanation:'Congenital pneumonia.'},
+
+    {id:'q40', stem:'CXR: bowel gas in thorax, mediastinal shift, scaphoid abdomen — diagnosis?', options:[
+      {label:'A', text:'Pneumothorax', isCorrect:false},
+      {label:'B', text:'Choanal atresia', isCorrect:false},
+      {label:'C', text:'CDH', isCorrect:true},
+      {label:'D', text:'RDS', isCorrect:false}
+    ], explanation:'CDH.'},
+
+    {id:'q41', stem:'CXR: free air in pleural space with sudden deterioration on CPAP — diagnosis?', options:[
+      {label:'A', text:'Pneumothorax', isCorrect:true},
+      {label:'B', text:'MAS', isCorrect:false},
+      {label:'C', text:'TTN', isCorrect:false},
+      {label:'D', text:'RDS', isCorrect:false}
+    ], explanation:'Pneumothorax.'},
+  ];
+
+  // ==== STATE ====
+  let order = [];          // question ordering (shuffled once)
+  let currentIdx = 0;      // index within order
+  let answers = {};        // id -> label
+  let submitted = false;
+  let startTime = Date.now();
+  let durationMs = QUIZ_DURATION_MS;
+  let timeLeftMs = durationMs;
+  let saveTick = null;
+
+  // Try to restore from localStorage
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+  if(saved && saved.questionsHash === hashQuestions(questions)){
+    order = saved.order || [];
+    currentIdx = saved.currentIdx || 0;
+    answers = saved.answers || {};
+    submitted = !!saved.submitted;
+    startTime = saved.startTime || Date.now();
+    durationMs = saved.durationMs || QUIZ_DURATION_MS;
+    const now = Date.now();
+    // If previously running, compute remaining
+    timeLeftMs = Math.max(0, (saved.timeLeftMs ?? durationMs) - (now - (saved.savedAt || now)));
+  }
+
+  if(order.length === 0){
+    order = shuffle([...questions.keys()].map(i=>i));
+  }
+
+  // ==== INIT UI ====
+  const qCountEl = document.getElementById('qCount');
+  const qnavEl = document.getElementById('qnav');
+  const qwrapEl = document.getElementById('qwrap');
+  const timerEl = document.getElementById('timer');
+  const saveStatusEl = document.getElementById('saveStatus');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const retakeBtn = document.getElementById('retakeBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const downloadJsonBtn = document.getElementById('downloadJsonBtn');
+  const resultsSection = document.getElementById('results');
+  const statsEl = document.getElementById('stats');
+  const reviewEl = document.getElementById('review');
+  const scrollTopBtn = document.getElementById('scrollTop');
+
+  qCountEl.textContent = `${questions.length} questions`;
+  renderNav();
+  renderQuestion();
+  updateNavState();
+
+  // Timer
+  let timerInterval = setInterval(()=>{
+    if(timeLeftMs <= 0){ timeLeftMs = 0; updateTimer(); clearInterval(timerInterval); if(!submitted) doSubmit(true); return; }
+    timeLeftMs -= 1000; updateTimer();
+  }, 1000);
+  updateTimer();
+
+  // Autosave
+  queueSave();
+
+  // Events
+  prevBtn.addEventListener('click', ()=>{ if(currentIdx>0){ currentIdx--; renderQuestion(); updateNavState(); saveNow(); }});
+  nextBtn.addEventListener('click', ()=>{ if(currentIdx<order.length-1){ currentIdx++; renderQuestion(); updateNavState(); saveNow(); }});
+  submitBtn.addEventListener('click', ()=> doSubmit(false));
+  retakeBtn.addEventListener('click', ()=> doRetake());
+  exportBtn.addEventListener('click', ()=> exportCSV());
+  downloadJsonBtn.addEventListener('click', ()=> downloadJSON());
+  scrollTopBtn.addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+
+  // Keyboard navigation
+  window.addEventListener('keydown', (e)=>{
+    if(e.key==='ArrowRight') nextBtn.click();
+    if(e.key==='ArrowLeft') prevBtn.click();
+  });
+
+  function renderNav(){
+    qnavEl.innerHTML = '';
+    order.forEach((idx, i)=>{
+      const btn = document.createElement('button');
+      const qid = questions[idx].id;
+      btn.textContent = i+1;
+      btn.setAttribute('aria-label', `Question ${i+1}`);
+      if(answers[qid]) btn.classList.add('answered');
+      btn.addEventListener('click', ()=>{ currentIdx = i; renderQuestion(); updateNavState(); saveNow(); });
+      qnavEl.appendChild(btn);
+    });
+  }
+
+  function renderQuestion(){
+    const q = questions[order[currentIdx]];
+    const chosen = answers[q.id] || null;
+    const shuffledOpts = q._shuffledOpts || (q._shuffledOpts = shuffle(q.options.map(o=>({...o}))));
+
+    qwrapEl.innerHTML = '';
+    const stem = document.createElement('div');
+    stem.className = 'stem';
+    stem.innerHTML = `<span class="tag">${currentIdx+1}/${order.length}</span> ${escapeHtml(q.stem)}`;
+    qwrapEl.appendChild(stem);
+
+    const opts = document.createElement('div');
+    opts.className = 'opts';
+
+    shuffledOpts.forEach(opt=>{
+      const id = `${q.id}_${opt.label}`;
+      const wrap = document.createElement('div'); wrap.className='opt';
+      const input = document.createElement('input'); input.type='radio'; input.name=q.id; input.id=id; input.value=opt.label; input.checked = chosen===opt.label; 
+      input.addEventListener('change', ()=>{ answers[q.id]=opt.label; renderNav(); updateNavState(); queueSave(); });
+
+      const lab = document.createElement('label'); lab.setAttribute('for',id);
+      lab.innerHTML = `<span class="kbd">${opt.label}</span> <span>${escapeHtml(opt.text)}</span>`;
+
+      wrap.appendChild(input); wrap.appendChild(lab); opts.appendChild(wrap);
+    });
+
+    qwrapEl.appendChild(opts);
+  }
+
+  function updateNavState(){
+    // Buttons
+    prevBtn.disabled = currentIdx===0;
+    nextBtn.disabled = currentIdx===order.length-1;
+    // Highlight nav
+    [...qnavEl.children].forEach((btn,i)=>{
+      btn.classList.toggle('current', i===currentIdx);
+      const qid = questions[order[i]].id;
+      btn.classList.toggle('answered', !!answers[qid]);
+      if(submitted){
+        const q = questions[order[i]];
+        const chosen = answers[qid];
+        const correct = q.options.find(o=>o.isCorrect)?.label;
+        btn.classList.toggle('correct', chosen && chosen===correct);
+        btn.classList.toggle('wrong', chosen && chosen!==correct);
+      } else {
+        btn.classList.remove('correct','wrong');
+      }
+    });
+    retakeBtn.disabled = !submitted;
+  }
+
+  function doSubmit(auto=false){
+    submitted = true;
+    clearInterval(timerInterval);
+    saveNow();
+
+    // Grade
+    let correct=0, wrong=0, unanswered=0;
+    order.forEach(idx=>{
+      const q = questions[idx];
+      const chosen = answers[q.id];
+      const key = q.options.find(o=>o.isCorrect)?.label;
+      if(!chosen) unanswered++; else if(chosen===key) correct++; else wrong++;
+    });
+
+    const timeTakenMs = durationMs - timeLeftMs;
+    const pct = Math.round((correct/order.length)*100);
+
+    // Stats UI
+    resultsSection.style.display = '';
+    statsEl.innerHTML = '';
+    statsEl.appendChild(stat('Score', `${correct}/${order.length}`));
+    statsEl.appendChild(stat('Percent', `${pct}%`));
+    statsEl.appendChild(stat('Correct', `${correct}`));
+    statsEl.appendChild(stat('Wrong/Unans', `${wrong}/${unanswered}`));
+
+    // Review
+    reviewEl.innerHTML='';
+    order.forEach((idx,i)=>{
+      const q = questions[idx];
+      const card = document.createElement('div');
+      card.className='qwrap card';
+      const chosen = answers[q.id] || null;
+      const key = q.options.find(o=>o.isCorrect)?.label;
+      const heading = document.createElement('div');
+      heading.className='stem';
+      heading.innerHTML = `<span class="tag">Q${i+1}</span> ${escapeHtml(q.stem)} `+
+        (chosen? (chosen===key? `<span class="tag" style="color:var(--good);border-color:#14532d">Correct</span>` : `<span class="tag" style="color:var(--bad);border-color:#7f1d1d">Wrong</span>`) : `<span class="tag">Unanswered</span>`);
+      card.appendChild(heading);
+
+      const ul = document.createElement('div'); ul.className='opts';
+      (q._shuffledOpts||q.options).forEach(opt=>{
+        const row = document.createElement('div'); row.className='opt';
+        if(opt.label===key){ row.style.borderColor = '#14532d'; row.style.background = 'rgba(52,211,153,.08)'; }
+        if(chosen && opt.label===chosen && chosen!==key){ row.style.borderColor = '#7f1d1d'; row.style.background = 'rgba(248,113,113,.08)'; }
+        row.innerHTML = `<div class="kbd">${opt.label}</div><div>${escapeHtml(opt.text)}</div>`;
+        ul.appendChild(row);
+      });
+      card.appendChild(ul);
+
+      const exp = document.createElement('div'); exp.className='explain';
+      exp.textContent = q.explanation || 'Not specified in doc.';
+      card.appendChild(exp);
+
+      reviewEl.appendChild(card);
+    });
+
+    updateNavState();
+    if(!auto) window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function doRetake(){
+    // Preserve current question order, clear answers and submission
+    submitted=false; answers={}; timeLeftMs = QUIZ_DURATION_MS; startTime = Date.now();
+    document.getElementById('results').style.display='none';
+    ;[...questions].forEach(q=>{ delete q._shuffledOpts; });
+    renderNav(); renderQuestion(); updateNavState(); updateTimer();
+    clearInterval(timerInterval);
+    timerInterval = setInterval(()=>{
+      if(timeLeftMs <= 0){ timeLeftMs = 0; updateTimer(); clearInterval(timerInterval); if(!submitted) doSubmit(true); return; }
+      timeLeftMs -= 1000; updateTimer();
+    }, 1000);
+    saveNow();
+  }
+
+  function exportCSV(){
+    const header = ['question_id','chosen_label','correct_label','correct','time_remaining_s'];
+    const rows = order.map(idx=>{
+      const q = questions[idx];
+      const chosen = answers[q.id] || '';
+      const correct = q.options.find(o=>o.isCorrect)?.label || '';
+      const ok = chosen && chosen===correct ? 'TRUE':'FALSE';
+      return [q.id, chosen, correct, ok, Math.floor(timeLeftMs/1000)];
+    });
+    const csv = [header, ...rows].map(r=>r.map(csvEscape).join(',')).join('\n');
+    downloadBlob(new Blob([csv], {type:'text/csv'}), 'results.csv');
+  }
+
+  function downloadJSON(){
+    const data = { title: QUIZ_TITLE, questions };
+    downloadBlob(new Blob([JSON.stringify(data,null,2)], {type:'application/json'}), 'questions.json');
+  }
+
+  function stat(name, value){ const d=document.createElement('div'); d.className='stat'; d.innerHTML=`<h3>${escapeHtml(value)}</h3><div class="muted">${escapeHtml(name)}</div>`; return d; }
+  function csvEscape(x){ x = String(x ?? ''); if(/[",\n]/.test(x)) return '"'+x.replace(/"/g,'""')+'"'; return x; }
+  function downloadBlob(blob, filename){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 2000); }
+
+  function updateTimer(){ timerEl.textContent = formatTime(timeLeftMs); }
+  function formatTime(ms){ const s=Math.max(0,Math.floor(ms/1000)); const m=String(Math.floor(s/60)).padStart(2,'0'); const ss=String(s%60).padStart(2,'0'); return `${m}:${ss}`; }
+
+  function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+  function escapeHtml(s){ return String(s).replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function hashQuestions(qs){
+    // Simple hash for integrity across sessions
+    const str = JSON.stringify(qs.map(q=>({id:q.id, stem:q.stem, options:q.options.map(o=>o.text+o.isCorrect)})));
+    let h=0; for(let i=0;i<str.length;i++){ h=(h*31 + str.charCodeAt(i))>>>0; } return h;
+  }
+
+  function queueSave(){ if(saveTick) return; saveTick=setInterval(saveNow, 5000); }
+  function saveNow(){ const payload = { questionsHash: hashQuestions(questions), order, currentIdx, answers, submitted, startTime, durationMs, timeLeftMs, savedAt: Date.now() }; localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); blinkSaved(); }
+  function blinkSaved(){ saveStatusEl.textContent='Saved'; setTimeout(()=>{ saveStatusEl.textContent='Autosaved'; },800); }
+</script>
+</body>
+</html>
